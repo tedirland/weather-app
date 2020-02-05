@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <!-- Bootstrap CSS CDN  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+  ​
+  <!-- Font Awesome CSS Icons (For cool glyphicons) -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+  ​
+  <!-- Style to fix the issue of text extending past card length -->
+
+</head>
+
+<body>
+
+  <!-- DOM Elements will go here -->
+
+  <div class='jumbotron'>
+    <h1>Weather Dashboard</h1>
+  </div>
+  <!-- Might be a header, need to look into bootstrap -->
+
+
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col col-md-4">
+
+
+        <div class="form-group">
+          <label for="search">City: </label>
+          <input type="text" class="form-control" id="citySearch">
+          <button type="submit" class="btn btn-primarysearchBtn fa fa-search"></button>
+        </div>
+
+        <ul class="cityList"></ul>
+
+      </div>
+      <!-- end of col 1 -->
+
+      <div class="col col-lg-8">
+
+        <card class="currentConditions">
+          <div class="cityInfo">
+            <ul class="conditionStats">
+            </ul>
+
+          </div>
+        </card>
+
+        <h3><strong>5-Day Forecast:</strong></h3>
+        <div class="cityForecast">
+
+          <!-- Append Cards here with the forecast details  -->
+
+        </div>
+        <!-- end of col 2 -->
+      </div>
+
+
+
+
+      <!-- End of Row -->
+    </div>
+    <!-- End of Container  -->
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script type="text/javascript">
+
+    // Dom Elements
+
+    var searchCity = $("#citySearch");
+
+    var cityListEl = $('.cityList')
+    // Will append city buttons here
+
+    var currentConditionsEl = $('cityInfo')
+    // will append city name, date and weather image here
+
+    var foreCastEl = $('cityForecast')
+
+    var searchBtn = $('.btn-primarysearchBtn')
+
+    var now = moment()
+    var date = moment().format("M/D/YYYY")
+
+    console.log(date)
+
+    //Functions will go here
+
+
+    function UpdateCurrentConditions() {
+
+      $(currentConditionsEl).html(
+
+
+
+      )
+
+
+
+    }
+
+    function getForecast() {
+
+
+    }
+
+    function appendSearchHistory() {
+      // Append Search History as Button to left
+
+      cityListEl.append($("<li>" + "<button class= 'btn btn-primary city'>" + searchCity[0].value + "</button>" + "</li>"))
+
+      // Need to save to local memory
+
+
+    }
+
+
+
+
+
+    //Event Listener Will Go Here for btn-primarysearchButton
+
+    $(searchBtn).on("click", function (event) {
+
+      event.preventDefault();
+
+      appendSearchHistory();
+
+
+      var queryURL = "api.openweathermap.org/data/2.5/weather?q=" + searchCity[0].value
+      var apiKey = "&APPID=1156accad322ceaaa9a5a34fba0478e5"
+      console.log(queryURL)
+      $.ajax({
+        url: "https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?q=" + searchCity[0].value + apiKey,
+        method: "Get"
+
+
+      }).then(function (response) {
+
+        var tempNum = parseInt(response.main.temp)
+        var farenheitTemp = Math.floor((tempNum - 273.15) * (9 / 5) + 32)
+        var rawWindSpeed = parseInt(response.wind.speed)
+        var windSpeed = Math.floor(rawWindSpeed * 2.237)
+        var iconCode = response.weather[0].icon
+        var iconURL = "http://openweathermap.org/img/w/"+ iconCode + ".png"
+
+
+
+        console.log(farenheitTemp)
+        console.log(typeof (iconCode))
+
+        //  var farenheitTemp = TEM
+
+        $('.cityInfo').html(
+
+          "<h5>" + response.name + " " + "(" + date + ")" + "</h5>" +   "<img class= 'img-thumbnail' src =" +iconURL + " alt = 'Weather Icon'> " +
+
+          "<p>" + "Temperature: " + farenheitTemp + "<span>" + "&#8457;" + "</span>" + "</p>" +
+          "<p>" + "Humidity: " + response.main.humidity + "<span>" + "&percnt;" + "</span>" + "</p>" +
+          "<p>" + "Wind Speed: " + windSpeed + "MPH" + "</p>" +
+          "<p>" + "UV Index: " + response.main.humidity + "<span>" + "&percnt;" + "</span>" + "</p>" 
+
+
+
+        )
+
+        console.log(response)
+
+      })
+
+
+
+
+
+
+
+    })
+
+
+
+
+
+
+
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
